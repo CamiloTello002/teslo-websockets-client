@@ -6,7 +6,8 @@ enum ConnectStatus {
 }
 
 enum Events {
-  ClientsUpdated = 'clients-updated'
+  ClientsUpdated = 'clients-updated',
+  MessageFromClient = 'message-from-client'
 }
 
 
@@ -31,10 +32,12 @@ export function addListeners(socket: Socket) {
 
   socket.on(ConnectStatus.connect, () => {
     serverStatusLabel.innerHTML = 'connected'
+    messageInput.disabled = false;
   });
 
   socket.on(ConnectStatus.disconnect, () => {
     serverStatusLabel.innerHTML = 'disconnected'
+    messageInput.disabled = true;
   });
 
   socket.on(Events.ClientsUpdated, (clients: string[]) => {
@@ -49,7 +52,7 @@ export function addListeners(socket: Socket) {
 
     if (messageInput.value.trim().length <= 0) return;
 
-    console.log({ id: 'itz me', message: messageInput.value });
+    socket.emit(Events.MessageFromClient, { id: 'itz me', message: messageInput.value })
 
     messageInput.value = '';
   })
