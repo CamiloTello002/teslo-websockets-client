@@ -7,7 +7,8 @@ enum ConnectStatus {
 
 enum Events {
   ClientsUpdated = 'clients-updated',
-  MessageFromClient = 'message-from-client'
+  MessageFromClient = 'message-from-client',
+  MessageFromServer = 'message-from-server'
 }
 
 
@@ -24,11 +25,15 @@ export function connectToServer() {
 
 export function addListeners(socket: Socket) {
 
+  /* HTML elements to modify **/
+
   const serverStatusLabel = document.getElementById('server-status')!;
   const clientsList = document.querySelector('.clients-list')!;
 
   const messageForm = document.querySelector<HTMLFormElement>('.message-form')!;
   const messageInput = document.querySelector<HTMLInputElement>('.message-input')!;
+
+  const messageList = document.querySelector('.message-list')!;
 
   socket.on(ConnectStatus.connect, () => {
     serverStatusLabel.innerHTML = 'connected'
@@ -55,5 +60,9 @@ export function addListeners(socket: Socket) {
     socket.emit(Events.MessageFromClient, { id: 'itz me', message: messageInput.value })
 
     messageInput.value = '';
+  });
+
+  socket.on(Events.MessageFromServer, (payload: { fullName: string, message: string }) => {
+    console.log({ payload });
   })
 }
