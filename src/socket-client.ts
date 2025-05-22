@@ -62,7 +62,13 @@ export function addListeners(socket: Socket) {
     messageInput.value = '';
   });
 
-  socket.on(Events.MessageFromServer, (payload: { fullName: string, message: string }) => {
-    console.log({ payload });
+  socket.on(Events.MessageFromServer, (payload: { userId: string, message: string }) => {
+    const newMessage = `
+      <li style="display: flex; gap: .5rem; align-items: center; line-height: .5;">
+        <strong>${payload.userId}</strong>
+        <p>${payload.message}</p>
+      </li>
+    `
+    messageList.innerHTML += newMessage;
   })
 }
