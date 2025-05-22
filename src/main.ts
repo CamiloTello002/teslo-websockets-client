@@ -3,7 +3,13 @@ import { connectToServer } from './socket-client'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <div>
-    <h1>Websocket - Client</h1>
+    <h1 style="font-size: 2rem;">Websocket - Client</h1>
+
+    <input class="jwt-input" placeholder="Json Web Token" />
+    <button>Conectarse</button>
+
+    <br />
+    <br />
 
     <span id="server-status">Offline</span>
 
