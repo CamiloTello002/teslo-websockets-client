@@ -12,8 +12,12 @@ enum Events {
 }
 
 
-export function connectToServer() {
-  const manager = new Manager('http://localhost:3000/socket.io/socket.io.js')
+export function connectToServer(token: string) {
+  const manager = new Manager('http://localhost:3000/socket.io/socket.io.js', {
+    extraHeaders: {
+      authentication: token
+    }
+  })
 
   const socket = manager.socket('/')
 
