@@ -43,11 +43,12 @@ export function connectToServer(token: string) {
   currentSocket = socket;
   currentManager = manager;
 
-  addListeners(socket);
+  // only called once when the page loads
+  addListeners();
 }
 
 
-export function addListeners(socket: Socket) {
+export function addListeners() {
 
   /* HTML elements to modify **/
 
@@ -59,34 +60,35 @@ export function addListeners(socket: Socket) {
 
   const messageList = document.querySelector('.message-list')!;
 
-  socket.on(ConnectStatus.connect, () => {
+  currentSocket?.on(ConnectStatus.connect, () => {
     serverStatusLabel.innerHTML = 'connected'
     messageInput.disabled = false;
   });
 
-  socket.on(ConnectStatus.disconnect, () => {
+  currentSocket?.on(ConnectStatus.disconnect, () => {
     serverStatusLabel.innerHTML = 'disconnected'
     messageInput.disabled = true;
   });
 
-  socket.on(Events.ClientsUpdated, (clients: string[]) => {
+  currentSocket?.on(Events.ClientsUpdated, (clients: string[]) => {
     const clientsMarkup = clients.map((client) => {
       return `<li>${client}</li>\n`
     });
     clientsList.innerHTML = clientsMarkup.join('\n');
   });
 
+  // this listener always points to the latest socket
   messageForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
     if (messageInput.value.trim().length <= 0) return;
 
-    socket.emit(Events.MessageFromClient, { id: 'itz me', message: messageInput.value })
+    currentSocket?.emit(Events.MessageFromClient, { id: 'itz me', message: messageInput.value })
 
     messageInput.value = '';
   });
 
-  socket.on(Events.MessageFromServer, (payload: { userId: string, message: string }) => {
+  currentSocket?.on(Events.MessageFromServer, (payload: { userId: string, message: string }) => {
     const newMessage = `
       <li style="display: flex; gap: .5rem; align-items: center; line-height: .5;">
         <strong>${payload.userId}</strong>
