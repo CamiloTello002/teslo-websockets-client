@@ -31,7 +31,7 @@ export function connectToServer(token: string) {
     currentManager = null;
   }
 
-  const manager = new Manager('http://localhost:3000/socket.io/socket.io.js', {
+  const manager = new Manager(`${import.meta.env.VITE_API_HOST}/socket.io/socket.io.js`, {
     extraHeaders: {
       authentication: token
     }
