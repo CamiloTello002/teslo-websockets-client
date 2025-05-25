@@ -11,17 +11,37 @@ enum Events {
   MessageFromServer = 'message-from-server'
 }
 
+// of course they're initially null. It doesn't even exist
+let currentSocket: Socket | null = null;
+let currentManager: Manager | null = null;
 
+
+// whenever you call this function...
 export function connectToServer(token: string) {
+  // Clean up previous connection if it exists
+  if (currentSocket) {
+    console.log('Cleaning up previous socket connection');
+    currentSocket.removeAllListeners(); // Remove all event listeners
+    currentSocket.disconnect(); // Disconnect the socket
+    currentSocket = null;
+  }
+
+  if (currentManager) {
+    currentManager.off(); // Close the manager and all its sockets
+    currentManager = null;
+  }
+
   const manager = new Manager('http://localhost:3000/socket.io/socket.io.js', {
     extraHeaders: {
       authentication: token
     }
   })
 
+  // I need to STORE THE REFERENCES of both the socket and the manager
   const socket = manager.socket('/')
 
-  console.log({ socket })
+  currentSocket = socket;
+  currentManager = manager;
 
   addListeners(socket);
 }
