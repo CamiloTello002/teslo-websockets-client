@@ -6,7 +6,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <h1 style="font-size: 2rem;">Websocket - Client</h1>
 
     <input class="jwt-input" placeholder="Json Web Token" />
-    <button>Conectarse</button>
+    <button class="btn-connect">Conectarse</button>
 
     <br />
     <br />
@@ -25,4 +25,14 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   </div>
 `
 
-connectToServer();
+const jwtTokenInput = document.querySelector<HTMLInputElement>('.jwt-input')!;
+const buttonConnect = document.querySelector<HTMLButtonElement>('.btn-connect')!;
+
+buttonConnect.addEventListener('click', () => {
+
+  const token = jwtTokenInput.value.trim();
+
+  if (token.length <= 0) return alert('Please enter a valid JWT');
+
+  connectToServer(token);
+})
